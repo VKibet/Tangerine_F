@@ -8,8 +8,7 @@
 @section('og_type', 'website')
 @section('og_image', asset('images/logo.svg'))
 
-@section('structured_data')
-@php
+@section('structured_data')@php
     $socialUrls = \App\Helpers\SocialMediaHelper::getSameAsArray();
     $sameAsJson = '';
     if (!empty($socialUrls)) {
@@ -57,12 +56,129 @@
 @endsection
 
 @section('content')
+
+
+    @php
+        // Select from featured products available in various categories
+    $featuredProducts = collect()
+        ->merge($livingRoomProducts ?? collect())
+        ->merge($bedProducts ?? collect())
+        ->merge($sofaProducts ?? collect())
+        ->merge($diningProducts ?? collect())
+        ->merge($coffeeTableProducts ?? collect())
+        ->merge($airbnbProducts ?? collect())
+        ->unique('id')
+        ->take(10);
+@endphp
+
+<!-- HERO SECTION -->
+<section class="relative h-screen w-full overflow-hidden">
+
+    <!-- Background Video -->
+      <video 
+        class="absolute top-0 left-0 w-full h-full object-cover"
+        autoplay
+        loop
+        muted
+        playsinline
+        preload="auto"
+        poster="{{ asset('images/landing-fallback.jpg') }}"
+    >     
+    <source src="{{ asset('images/TestVideo.mp4') }}" type="video/mp4">
+    </video>
+
+    <!-- Your overlay + content on top as usual -->
+    <div class="absolute inset-0 hero-overlay"></div>
+    <div class="absolute inset-0 flex items-center justify-center text-white">
+        Kenya’s home for quality furniture
+    </div>
+</section>
+
+<!-- End of HERO SECTION -->
+    @if($featuredProducts->count() > 0)
+        <!-- Animated Featured Products Strip -->
+        <section class="bg-gray-950 text-white py-10 overflow-hidden">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+                    <div>
+                        <p class="uppercase tracking-[0.2em] text-xs text-yellow-400 mb-2">
+                            Curated just for you
+                        </p>
+                        <h2 class="text-2xl md:text-3xl font-bold">
+                            Featured Tangerine Picks
+                        </h2>
+                        <p class="text-sm md:text-base text-gray-300 mt-2 max-w-xl">
+                            A quick glimpse of our best-selling products. Hover to pause and click to view details and purchase.
+                        </p>
+                    </div>
+                    <a href="{{ route('products.index') }}"
+                       class="inline-flex items-center text-sm md:text-base text-yellow-400 hover:text-yellow-300">
+                        View all products
+                        <i class="fas fa-arrow-right ml-2 text-xs"></i>
+                    </a>
+                </div>
+
+                <div class="relative">
+                    <!-- Gradient masks on edges -->
+                    <div class="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-gray-950 to-transparent z-20"></div>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-gray-950 to-transparent z-20"></div>
+
+                    <div class="overflow-hidden">
+                        <div class="flex tangerine-marquee-track gap-6 w-[200%]">
+                            @foreach([$featuredProducts, $featuredProducts] as $loopCollection)
+                                @foreach($loopCollection as $product)
+                                    <a
+                                        href="{{ route('products.show', $product->slug ?? $product->id) }}"
+                                        class="group bg-gray-900/70 border border-gray-800 rounded-2xl min-w-[240px] max-w-[260px] flex-shrink-0 overflow-hidden hover:border-yellow-400/70 transition-all duration-300 shadow-lg hover:shadow-yellow-500/10"
+                                    >
+                                        <div class="aspect-[4/3] bg-gray-800 overflow-hidden">
+                                            <img
+                                                src="{{ $product->main_image_url ?? 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=80' }}"
+                                                alt="{{ $product->name ?? 'Furniture' }}"
+                                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                            >
+                                        </div>
+                                        <div class="p-4 flex flex-col gap-1">
+                                            @if(!empty($product->category?->name))
+                                                <p class="text-[11px] uppercase tracking-[0.18em] text-gray-400">
+                                                    {{ $product->category->name }}
+                                                </p>
+                                            @endif
+                                            <h3 class="text-sm md:text-base font-semibold line-clamp-2">
+                                                {{ $product->name ?? 'Tangerine Furniture Piece' }}
+                                            </h3>
+                                            @if(!empty($product->price))
+                                                <p class="mt-1 text-sm text-yellow-400 font-semibold">
+                                                    KES {{ number_format($product->price) }}
+                                                </p>
+                                            @endif
+                                            <p class="text-xs text-gray-400 mt-1 line-clamp-2">
+                                                {{ $product->short_description ?? 'Premium, functional and durable furniture crafted for modern Kenyan homes.' }}
+                                            </p>
+                                            <div class="mt-3 flex items-center justify-between">
+                                                <span class="text-[11px] uppercase tracking-[0.2em] text-gray-400">
+                                                    View details
+                                                </span>
+                                                <span class="w-7 h-7 rounded-full border border-yellow-400/70 flex items-center justify-center text-[10px] text-yellow-400 group-hover:bg-yellow-400 group-hover:text-gray-900 transition">
+                                                    <i class="fas fa-arrow-right"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                @endforeach
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    @endif
     <!-- Full Screen Hero Banner -->
     <section class="relative h-[50vh] bg-gray-900 overflow-hidden">
         <!-- Background Image -->
         <div class="absolute inset-0">
-            @if($diningProducts->count() > 0)
-                <img src="{{ $diningProducts->first()->main_image_url }}" alt="Dining Room" class="w-full h-full object-cover">
+            @if($livingRoomProducts->count() > 100)
+                <img src="{{ $livingRoomProducts->first()->main_image_url }}" alt="Living Room" class="w-full h-full object-cover">
             @else
                 <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80" alt="Dining Room" class="w-full h-full object-cover">
             @endif
@@ -72,8 +188,8 @@
         <!-- Hero Content -->
         <div class="absolute bottom-8 w-full text-white z-10 justify-center items-center flex flex-col">
             <div>
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Dining Room</h2>
-                    <a href="{{ route('products.index', ['category' => 'dining']) }}" class="btn-yellow-border inline-block px-6 py-3 font-semibold">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Living Room</h2>
+                    <a href="{{ route('products.index', ['category' => 'living-room']) }}" class="btn-yellow-border inline-block px-6 py-3 font-semibold">
                         View more
                     </a>
         </div>
@@ -95,7 +211,10 @@
                         @endif
                     </div>
                     <div class=" absolute inset-0 flex w-full h-full items-center justify-center flex-col">
-                    <h3 class="text-xl font-semibold text-gray-100 border-2 px-6 py-2 border-yellow-400">Bed</h3>
+                    <!-- <h3 class="text-xl font-semibold text-gray-100 border-2 px-6 py-2 border-yellow-400">Bed</h3> -->
+                    <a href="{{ route('products.index', ['category' => 'bed']) }}" class="btn-yellow-border inline-block px-6 py-3 font-semibold">
+                        View more
+                    </a>
                     </div>
                 </div>
 
@@ -108,7 +227,9 @@
                         @endif
                     </div>
                     <div class=" absolute inset-0 flex w-full h-full items-center justify-center flex-col">
-                    <h3 class="text-xl font-semibold text-gray-100 border-2 px-6 py-2 border-yellow-400">Sofa</h3>
+                    <a href="{{ route('products.index', ['category' => 'sofa']) }}" class="btn-yellow-border inline-block px-6 py-3 font-semibold">
+                        View more
+                    </a>
                     </div>
                 </div>
                 <div class="text-center aspect-[3/2] relative">
@@ -120,7 +241,9 @@
                         @endif
                     </div>
                     <div class=" absolute inset-0 flex w-full h-full items-center justify-center flex-col">
-                    <h3 class="text-xl font-semibold text-gray-100 border-2 px-6 py-2 border-yellow-400">Coffee tables</h3>
+                    <a href="{{ route('products.index', ['category' => 'coffee-table']) }}" class="btn-yellow-border inline-block px-6 py-3 font-semibold">
+                    View more
+                    </a>
                     </div>
                 </div>
             </div>
@@ -150,7 +273,7 @@
                         <i class="fas fa-couch text-white text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-semibold text-gray-900 mb-3">Function, aesthetic furniture</h3>
-                    <p class="text-gray-600">We prioritize function and beauty on all our pieces, making them both usable and appealing.</p>
+                    <p class="text-gray-600">We prioritize functional and beauty on all our pieces, making them both usable and appealing.</p>
                 </div>
 
                 <!-- Durable, Premium Materials -->
@@ -187,7 +310,7 @@
             </div>
 
             <!-- Airbnb Categories Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <!-- Living Rooms -->
                 <div class="relative category-card">
                     <div class="relative h-64 bg-gray-200 rounded-lg overflow-hidden">
@@ -197,24 +320,24 @@
                             <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80" alt="Living Rooms" class="w-full h-full object-cover">
                         @endif
                         <div class="absolute bottom-4 left-4">
-                            <a href="{{ route('products.index', ['category' => 'living-room']) }}" class="btn-blue-dark inline-block px-4 py-2 font-semibold">
+                            <a href="{{ route('products.index', ['category' => 'living-room']) }}" class="btn-yellow-border inline-block px-4 py-2 font-semibold">
                                 SHOP LIVING ROOMS
                             </a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Wardrobe -->
+                <!-- Bedroom -->
                 <div class="relative category-card">
                     <div class="relative h-64 bg-gray-200 rounded-lg overflow-hidden">
-                        @if($wardrobeProducts->count() > 0)
-                            <img src="{{ $wardrobeProducts->first()->main_image_url }}" alt="Wardrobe" class="w-full h-full object-cover">
+                        @if($bedProducts->count() > 0)
+                            <img src="{{ $bedProducts->first()->main_image_url }}" alt="Bedroom" class="w-full h-full object-cover">
                         @else
-                            <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80" alt="Wardrobe" class="w-full h-full object-cover">
+                            <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80" alt="Bedroom" class="w-full h-full object-cover">
                         @endif
                         <div class="absolute bottom-4 left-4">
-                            <a href="{{ route('products.index', ['category' => 'wardrobe']) }}" class="btn-blue-dark inline-block px-4 py-2 font-semibold">
-                                SHOP WARDROBE
+                            <a href="{{ route('products.index', ['category' => 'bedroom']) }}" class="btn-yellow-border inline-block px-4 py-2 font-semibold">
+                            BEDROOM
                             </a>
                         </div>
                     </div>
@@ -229,8 +352,23 @@
                             <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80" alt="Dining" class="w-full h-full object-cover">
                         @endif
                         <div class="absolute bottom-4 left-4">
-                            <a href="{{ route('products.index', ['category' => 'dining']) }}" class="btn-blue-dark inline-block px-4 py-2 font-semibold">
+                            <a href="{{ route('products.index', ['category' => 'dining']) }}" class="btn-yellow-border inline-block px-4 py-2 font-semibold">
                                 SHOP DINING
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Hotels & Restaurants -->
+                <div class="relative category-card">
+                    <div class="relative h-64 bg-gray-200 rounded-lg overflow-hidden">
+                        @if($diningProducts->count() > 0)
+                            <img src="{{ $diningProducts->first()->main_image_url }}" alt="Hotels & Restaurants" class="w-full h-full object-cover">
+                        @else
+                            <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80" alt="Hotels & Restaurants" class="w-full h-full object-cover">
+                        @endif
+                        <div class="absolute bottom-4 left-4">
+                            <a href="{{ route('products.index', ['category' => 'hotels-restaurants']) }}" class="btn-yellow-border inline-block px-4 py-2 font-semibold">
+                                Hotels & Restaurants
                             </a>
                         </div>
                     </div>
@@ -238,4 +376,4 @@
             </div>
         </div>
     </section>
-@endsection 
+@endsection

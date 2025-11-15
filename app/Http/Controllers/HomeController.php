@@ -24,6 +24,8 @@ class HomeController extends Controller
             })
             ->limit(1)
             ->get();
+
+            // dd($diningProducts);
             
         $bedProducts = Product::with('category')
             ->active()

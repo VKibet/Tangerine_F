@@ -23,6 +23,15 @@
 .feature-icon:hover {
     transform: scale(1.1);
 }
+video {
+    animation: heroZoom 25s ease-out infinite;
+}
+
+@keyframes heroZoom {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.08); }
+}
+
 
 /* Button Styles */
 .btn-yellow-border {
@@ -140,3 +149,22 @@
         height: 1.25rem;
     }
 }
+/* Animated Featured Strip (Tangerine Marquee) */
+@keyframes tangerine-marquee {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.tangerine-marquee-track {
+    display: flex;
+    animation: tangerine-marquee 35s linear infinite;
+}
+
+.tangerine-marquee-track:hover {
+    animation-play-state: paused;
+}
+
