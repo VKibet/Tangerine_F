@@ -283,14 +283,14 @@
 
                 <div class="text-center aspect-[3/2] relative">
                     <div class="relative h-full  bg-gray-200 rounded-lg overflow-hidden mb-4">
-                        @if($bedProducts->count() > 0)
-                            <img src="{{ $sofaProducts->first()->main_image_url }}" alt="Beds" class="w-full h-full object-cover">
+                        @if($livingRoomProducts->count() > 0)
+                            <img src="{{ $livingRoomProducts->first()->main_image_url }}" alt="Living Room" class="w-full h-full object-cover">
                         @else
                         <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Sofa" class="w-full h-full object-cover">
                         @endif
                     </div>
                     <div class=" absolute inset-0 flex w-full h-full items-center justify-center flex-col">
-                    <a href="{{ route('products.index', ['category' => 'sofa']) }}" class="btn-yellow-border inline-block px-6 py-3 font-semibold">
+                    <a href="{{ route('products.index', ['category' => 'living-room']) }}" class="btn-yellow-border inline-block px-6 py-3 font-semibold">
                         View more
                     </a>
                     </div>
