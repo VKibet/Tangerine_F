@@ -98,6 +98,8 @@
 @if($featuredProducts->count() > 0)
 <section class="bg-gray-900 text-white py-10 overflow-hidden">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Header -->
         <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
             <div>
                 <p class="uppercase tracking-[0.2em] text-xs text-yellow-400 mb-2">
@@ -107,9 +109,10 @@
                     Featured Tangerine Picks
                 </h2>
                 <p class="text-sm md:text-base text-gray-300 mt-2 max-w-xl">
-                    A quick glimpse of our best-selling products. Hover to pause and click to view details and purchase.
+                    A glimpse of our best-selling products. Scroll to explore and click to view details.
                 </p>
             </div>
+
             <a href="{{ route('products.index') }}"
                class="inline-flex items-center text-sm md:text-base text-yellow-400 hover:text-yellow-300">
                 View all products
@@ -117,124 +120,91 @@
             </a>
         </div>
 
-        <!-- AUTO-SCROLL MARQUEE -->
+        <!-- Carousel Wrapper -->
         <div class="relative">
-            <!-- Left Scroll Button -->
+
+            <!-- Left Button -->
             <button
-                onclick="scrollLeft()"
-                class="absolute left-2 top-1/2 -translate-y-1/2 z-30 bg-gray-900/70 hover:bg-gray-900 text-white p-3 rounded-full shadow-lg touch-manipulation"
+                type="button"
+                aria-label="Scroll left"
+                data-carousel-left
+                class="absolute left-2 top-1/2 -translate-y-1/2 z-40 bg-gray-900/70 hover:bg-gray-900 text-white p-3 rounded-full shadow-lg"
             >
                 <i class="fas fa-chevron-left"></i>
             </button>
 
-            <!-- Right Scroll Button -->
+            <!-- Right Button -->
             <button
-                onclick="scrollRight()"
-                class="absolute right-2 top-1/2 -translate-y-1/2 z-30 bg-gray-900/70 hover:bg-gray-900 text-white p-3 rounded-full shadow-lg touch-manipulation"
+                type="button"
+                aria-label="Scroll right"
+                data-carousel-right
+                class="absolute right-2 top-1/2 -translate-y-1/2 z-40 bg-gray-900/70 hover:bg-gray-900 text-white p-3 rounded-full shadow-lg"
             >
                 <i class="fas fa-chevron-right"></i>
             </button>
 
-            <!-- Scroll Area -->
+            <!-- Scroll Container -->
             <div
-                id="featuredScroll"
-                class="overflow-x-auto scroll-smooth no-scrollbar flex gap-6"
+                class="featured-carousel flex gap-6 overflow-x-auto scroll-smooth no-scrollbar snap-x snap-mandatory"
             >
                 @php
-                    /** Duplicate collection for smooth infinite scroll */
-                    $marqueeProducts = $featuredProducts->concat($featuredProducts);
+                    // Duplicate products for infinite loop
+                    $loopProducts = $featuredProducts->concat($featuredProducts);
                 @endphp
 
-                @foreach($marqueeProducts as $product)
-                <a
-                    href="{{ route('products.show', $product->slug ?? $product->id) }}"
-                    class="group bg-gray-900/70 border border-gray-800 rounded-2xl min-w-[240px] max-w-[260px] flex-shrink-0 overflow-hidden hover:border-yellow-400/70 transition-all duration-300 shadow-lg hover:shadow-yellow-500/10"
-                >
-                    <div class="aspect-[4/3] bg-gray-800 overflow-hidden">
-                        <img
-                            loading="lazy"
-                            src="{{ $product->main_image_url ?? 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=80' }}"
-                            alt="{{ $product->name ?? 'Furniture' }}"
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        >
-                    </div>
-                    <div class="p-4 flex flex-col gap-1">
-                        @if(!empty($product->category?->name))
-                        <p class="text-[11px] uppercase tracking-[0.18em] text-gray-400">
-                            {{ $product->category->name }}
-                        </p>
-                        @endif
-                        <h3 class="text-sm md:text-base font-semibold line-clamp-2">
-                            {{ $product->name ?? 'Tangerine Furniture Piece' }}
-                        </h3>
-                        @if(!empty($product->price))
-                        <p class="mt-1 text-sm text-yellow-400 font-semibold">
-                            KES {{ number_format($product->price) }}
-                        </p>
-                        @endif
-                        <p class="text-xs text-gray-400 mt-1 line-clamp-2">
-                            {{ $product->short_description ?? 'Premium, functional and durable furniture crafted for modern Kenyan homes.' }}
-                        </p>
-                        <div class="mt-3 flex items-center justify-between">
-                            <span class="text-[11px] uppercase tracking-[0.2em] text-gray-400">
-                                View details
-                            </span>
-                            <span class="w-7 h-7 rounded-full border border-yellow-400/70 flex items-center justify-center text-[10px] text-yellow-400 group-hover:bg-yellow-400 group-hover:text-gray-900 transition">
-                                <i class="fas fa-arrow-right"></i>
-                            </span>
+                @foreach($loopProducts as $product)
+                    <a
+                        href="{{ route('products.show', $product->slug ?? $product->id) }}"
+                        class="snap-start group bg-gray-900/70 border border-gray-800 rounded-2xl
+                               min-w-[240px] max-w-[260px] flex-shrink-0 overflow-hidden
+                               hover:border-yellow-400/70 transition shadow-lg"
+                    >
+                        <div class="aspect-[4/3] bg-gray-800 overflow-hidden">
+                            <img
+                                loading="lazy"
+                                src="{{ $product->main_image_url ?? 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=80' }}"
+                                alt="{{ $product->name ?? 'Product image' }}"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            >
                         </div>
-                    </div>
-                </a>
+
+                        <div class="p-4 flex flex-col gap-1">
+                            @if($product->category?->name)
+                                <p class="text-[11px] uppercase tracking-[0.18em] text-gray-400">
+                                    {{ $product->category->name }}
+                                </p>
+                            @endif
+
+                            <h3 class="text-sm md:text-base font-semibold line-clamp-2">
+                                {{ $product->name }}
+                            </h3>
+
+                            @if($product->price)
+                                <p class="mt-1 text-sm text-yellow-400 font-semibold">
+                                    KES {{ number_format($product->price) }}
+                                </p>
+                            @endif
+
+                            <p class="text-xs text-gray-400 mt-1 line-clamp-2">
+                                {{ $product->short_description ?? 'Premium, functional and durable furniture.' }}
+                            </p>
+
+                            <div class="mt-3 flex items-center justify-between">
+                                <span class="text-[11px] uppercase tracking-[0.2em] text-gray-400">
+                                    View details
+                                </span>
+                                <span class="w-7 h-7 rounded-full border border-yellow-400/70 flex items-center justify-center text-[10px] text-yellow-400 group-hover:bg-yellow-400 group-hover:text-gray-900 transition">
+                                    <i class="fas fa-arrow-right"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </a>
                 @endforeach
             </div>
         </div>
     </div>
 </section>
-
-<script>
-    const featuredScroll = document.getElementById('featuredScroll');
-    const cardWidth = 260; // max card width
-    const gap = 24; // gap between cards (Tailwind gap-6 = 1.5rem = 24px)
-    const scrollStep = cardWidth + gap;
-    let scrollAmount = 0;
-    const scrollSpeed = 0.5; // pixels per frame
-    let scrollAnimation;
-
-    // Auto-scroll
-    function autoScroll() {
-        scrollAmount += scrollSpeed;
-        if (scrollAmount >= featuredScroll.scrollWidth / 2) {
-            scrollAmount = 0;
-        }
-        featuredScroll.scrollLeft = scrollAmount;
-        scrollAnimation = requestAnimationFrame(autoScroll);
-    }
-
-    autoScroll();
-
-    // Pause on hover/touch
-    const pauseScroll = () => cancelAnimationFrame(scrollAnimation);
-    const resumeScroll = () => autoScroll();
-
-    featuredScroll.addEventListener('mouseenter', pauseScroll);
-    featuredScroll.addEventListener('mouseleave', resumeScroll);
-    featuredScroll.addEventListener('touchstart', pauseScroll, { passive: true });
-    featuredScroll.addEventListener('touchend', resumeScroll, { passive: true });
-
-    // Scroll buttons (mobile + desktop)
-    function scrollLeft() {
-        featuredScroll.scrollLeft = Math.max(0, featuredScroll.scrollLeft - scrollStep);
-    }
-
-    function scrollRight() {
-        featuredScroll.scrollLeft = Math.min(
-            featuredScroll.scrollWidth - featuredScroll.clientWidth,
-            featuredScroll.scrollLeft + scrollStep
-        );
-    }
-</script>
 @endif
-
 
     <!-- Full Screen Hero Banner -->
     <section class="relative h-[50vh] bg-gray-900 overflow-hidden">
@@ -440,3 +410,44 @@
         </div>
     </section>
 @endsection
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.featured-carousel').forEach(carousel => {
+        const GAP = 24; // gap-6
+        const cards = carousel.children;
+        if (!cards.length) return;
+
+        // Wait for layout to settle
+        requestAnimationFrame(() => {
+            const cardWidth = cards[0].getBoundingClientRect().width + GAP;
+            const totalUniqueCards = cards.length / 2;
+            const loopWidth = totalUniqueCards * cardWidth;
+
+            // Start in the middle
+            carousel.scrollLeft = loopWidth;
+
+            // Infinite correction
+            carousel.addEventListener('scroll', () => {
+                if (carousel.scrollLeft <= 0) {
+                    carousel.scrollLeft += loopWidth;
+                } else if (carousel.scrollLeft >= loopWidth * 2) {
+                    carousel.scrollLeft -= loopWidth;
+                }
+            });
+
+            // Buttons
+            const wrapper = carousel.parentElement;
+            wrapper.querySelector('[data-carousel-left]')
+                ?.addEventListener('click', () => {
+                    carousel.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+                });
+
+            wrapper.querySelector('[data-carousel-right]')
+                ?.addEventListener('click', () => {
+                    carousel.scrollBy({ left: cardWidth, behavior: 'smooth' });
+                });
+        });
+    });
+});
+</script>
