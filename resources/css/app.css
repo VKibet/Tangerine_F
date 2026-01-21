@@ -161,10 +161,19 @@ video {
 
 .tangerine-marquee-track {
     display: flex;
-    animation: tangerine-marquee 35s linear infinite;
+    animation: tangerine-marquee 15s linear infinite;
 }
 
 .tangerine-marquee-track:hover {
     animation-play-state: paused;
 }
+/* Hide Scrollbar Utility */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
 
