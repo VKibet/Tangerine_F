@@ -321,14 +321,14 @@
         </div>
     </section>
 
-    <!-- Airbnb Furnishing Section -->
+    <!-- Coffee Table Furnishing Section -->
     <section class="bg-white py-16">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Hero Coffee Image -->
             <div class="relative mb-12">
                 <div class="relative h-96 md:h-[500px] bg-gray-200 rounded-lg overflow-hidden">
                     @if($coffeeTableProducts->count() > 0)
-                        <img src="{{ $coffeeTableProducts->first()->main_image_url }}" alt="Coffee Tables" class="w-full h-full object-cover">
+                        <img src="{{ $coffeeTableProducts->last()->main_image_url }}" alt="Coffee Tables" class="w-full h-full object-cover">
                     @else
                         <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80" alt="Coffee Tables" class="w-full h-full object-cover">
                     @endif
@@ -348,7 +348,7 @@
                 <div class="relative category-card">
                     <div class="relative h-64 bg-gray-200 rounded-lg overflow-hidden">
                         @if($livingRoomProducts->count() > 0)
-                            <img src="{{ $livingRoomProducts->first()->main_image_url }}" alt="Living Rooms" class="w-full h-full object-cover">
+                            <img src="{{ $livingRoomProducts->last()->main_image_url }}" alt="Living Rooms" class="w-full h-full object-cover">
                         @else
                             <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80" alt="Living Rooms" class="w-full h-full object-cover">
                         @endif
@@ -364,7 +364,7 @@
                 <div class="relative category-card">
                     <div class="relative h-64 bg-gray-200 rounded-lg overflow-hidden">
                         @if($bedProducts->count() > 0)
-                            <img src="{{ $bedProducts->first()->main_image_url }}" alt="Bedroom" class="w-full h-full object-cover">
+                            <img src="{{ $bedProducts->last()->main_image_url }}" alt="Bedroom" class="w-full h-full object-cover">
                         @else
                             <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80" alt="Bedroom" class="w-full h-full object-cover">
                         @endif
@@ -380,7 +380,7 @@
                 <div class="relative category-card">
                     <div class="relative h-64 bg-gray-200 rounded-lg overflow-hidden">
                         @if($diningProducts->count() > 0)
-                            <img src="{{ $diningProducts->first()->main_image_url }}" alt="Dining" class="w-full h-full object-cover">
+                            <img src="{{ $diningProducts->last()->main_image_url }}" alt="Dining" class="w-full h-full object-cover">
                         @else
                             <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80" alt="Dining" class="w-full h-full object-cover">
                         @endif
@@ -395,7 +395,7 @@
                 <div class="relative category-card">
                     <div class="relative h-64 bg-gray-200 rounded-lg overflow-hidden">
                         @if($diningProducts->count() > 0)
-                            <img src="{{ $diningProducts->first()->main_image_url }}" alt="Hotels & Restaurants" class="w-full h-full object-cover">
+                            <img src="{{ $diningProducts->last()->main_image_url }}" alt="Hotels & Restaurants" class="w-full h-full object-cover">
                         @else
                             <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80" alt="Hotels & Restaurants" class="w-full h-full object-cover">
                         @endif
