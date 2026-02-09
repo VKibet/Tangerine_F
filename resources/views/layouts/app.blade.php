@@ -54,6 +54,9 @@
     <!-- Structured Data -->
     @yield('structured_data')
 </head>
+<div 
+    id="toastContainer" class="fixed top-5 right-5 space-y-3 z-50">
+</div>
 <body class="bg-gray-50">
     @include('components.header')
     
@@ -62,5 +65,6 @@
     </main>
     
     @include('components.footer')
+    @stack('scripts')
 </body>
 </html>

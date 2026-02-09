@@ -409,7 +409,57 @@
             </div>
         </div>
     </section>
+
+<!-- Testimonials Section -->
+<section class="bg-white py-16">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
+                What our customers are saying
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Testimonial 1 -->
+            <div class="bg-gray-100 p-6 rounded-lg text-center">
+                <div class="w-14 h-14 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-quote-left text-white"></i>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    “The quality of the furniture exceeded my expectations. Beautiful design, very solid, and delivered on time.”
+                </p>
+                <h4 class="font-semibold text-gray-900">Sarah M.</h4>
+                <span class="text-sm text-gray-500">Nairobi</span>
+            </div>
+
+            <!-- Testimonial 2 -->
+            <div class="bg-gray-100 p-6 rounded-lg text-center">
+                <div class="w-14 h-14 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-quote-left text-white"></i>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    “Great craftsmanship and attention to detail. My custom sofa fits perfectly and looks amazing.”
+                </p>
+                <h4 class="font-semibold text-gray-900">James K.</h4>
+                <span class="text-sm text-gray-500">Kiambu</span>
+            </div>
+
+            <!-- Testimonial 3 -->
+            <div class="bg-gray-100 p-6 rounded-lg text-center">
+                <div class="w-14 h-14 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-quote-left text-white"></i>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    “Excellent service from start to finish. The furniture is both functional and stylish.”
+                </p>
+                <h4 class="font-semibold text-gray-900">Linda W.</h4>
+                <span class="text-sm text-gray-500">Westlands</span>
+            </div>
+        </div>
+    </div>
+</section>
 @endsection
+
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {

@@ -11,43 +11,52 @@
 @section('structured_data')
 @php
     $description = $product->description ?: 'Buy ' . $product->name . ' in Kenya. Quality ' . $product->category->name . ' at competitive prices.';
+    $structured = [
+        '@context' => 'https://schema.org',
+        '@type' => 'Product',
+        'name' => $product->name,
+        'description' => $description,
+        'image' => $product->main_image_url,
+        'url' => request()->url(),
+        'category' => $product->category->name,
+        'brand' => [
+            '@type' => 'Brand',
+            'name' => $product->brand ?? 'Tangerine Furniture',
+        ],
+        'offers' => [
+            '@type' => 'Offer',
+            'price' => $product->price,
+            'priceCurrency' => 'KES',
+            'availability' => $product->stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+            'url' => request()->url(),
+            'seller' => [
+                '@type' => 'Organization',
+                'name' => 'Guru Digital',
+            ],
+        ],
+        'aggregateRating' => [
+            '@type' => 'AggregateRating',
+            'ratingValue' => $product->rating ?? 0,
+            'reviewCount' => $product->reviews_count ?? 0,
+            'bestRating' => 5,
+            'worstRating' => 1,
+        ],
+    ];
 @endphp
-{!! '<script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "Product",
-    "name": "' . addslashes($product->name) . '",
-    "description": "' . addslashes($description) . '",
-    "image": "' . $product->main_image_url . '",
-    "url": "' . request()->url() . '",
-    "category": "' . addslashes($product->category->name) . '",
-    "brand": {
-        "@type": "Brand",
-        "name": "' . addslashes($product->brand ?? 'Tangerine Furniture') . '"
-    },
-    "offers": {
-        "@type": "Offer",
-        "price": "' . $product->price . '",
-        "priceCurrency": "KES",
-        "availability": "' . ($product->stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock') . '",
-        "url": "' . request()->url() . '",
-        "seller": {
-            "@type": "Organization",
-            "name": "Guru Digital"
-        }
-    },
-    "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "' . $product->rating . '",
-        "reviewCount": "' . $product->reviews_count . '",
-        "bestRating": "5",
-        "worstRating": "1"
-    }
-}
-</script>' !!}
+<script type="application/ld+json">{!! json_encode($structured, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT) !!}</script>
 @endsection
 
 @section('content')
+<!-- Root wrapper with product data for JS -->
+<div
+    id="productPage"
+    data-product-id="{{ $product->id }}"
+    data-stock="{{ $product->stock_quantity }}"
+    data-cart-url="{{ route('cart.add') }}"
+    data-wishlist-url="{{ route('wishlist.toggle') }}"
+    data-csrf="{{ csrf_token() }}"
+    data-main-image="{{ $product->main_image_url }}"
+>
     <!-- Breadcrumb -->
     <section class="bg-gray-50 py-4">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -93,12 +102,10 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Product Images -->
             <div class="space-y-4">
-                <!-- Main Image -->
                 <div class="aspect-w-1 aspect-h-1 w-full">
                     <img id="mainImage" src="{{ $product->main_image_url }}" alt="{{ $product->name }}" class="w-full h-full object-cover rounded-lg" style="aspect-ratio: 1/1;">
                 </div>
-                
-                <!-- Thumbnail Gallery -->
+
                 @if(count($product->all_images_urls) > 1)
                     <div class="relative">
                         <div class="flex space-x-2 overflow-x-auto scrollbar-hide" id="thumbnailContainer">
@@ -106,12 +113,10 @@
                                 <img src="{{ $imageUrl }}" 
                                      alt="{{ $product->name }} - Image {{ $index + 1 }}" 
                                      class="flex-shrink-0 w-20 h-20 object-cover rounded cursor-pointer border-2 {{ $index === 0 ? 'border-blue-500' : 'border-transparent hover:border-gray-300' }} thumbnail-image"
-                                     data-image="{{ $imageUrl }}"
-                                     style="width: 80px; height: 80px; min-width: 80px; max-width: 80px;">
+                                     data-image="{{ $imageUrl }}">
                             @endforeach
                         </div>
-                        
-                        <!-- Navigation Buttons -->
+
                         @if(count($product->all_images_urls) > 4)
                             <button class="scroll-left-btn absolute left-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-90 hover:bg-opacity-100 text-gray-800 p-1 rounded-full shadow-lg transition-all duration-200 z-10">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -196,21 +201,35 @@
                 <div class="flex items-center space-x-4">
                     <label class="text-sm font-medium text-gray-700">Quantity:</label>
                     <div class="flex items-center border border-gray-300 rounded-lg">
-                        <button type="button" onclick="updateQuantity(-1)" class="px-3 py-2 text-gray-600 hover:text-gray-800">-</button>
-                        <input type="number" id="quantity" value="1" min="1" max="{{ $product->stock_quantity }}" class="w-16 text-center border-0 focus:ring-0" readonly>
-                        <button type="button" onclick="updateQuantity(1)" class="px-3 py-2 text-gray-600 hover:text-gray-800">+</button>
+                        <button type="button" data-qty-minus class="px-3 py-2">-</button>
+                        <input
+                            id="quantity"
+                            type="number"
+                            value="1"
+                            min="1"
+                            max="{{ $product->stock_quantity }}"
+                            readonly
+                            class="w-16 text-center border-0"
+                        />
+                        <button type="button" data-qty-plus class="px-3 py-2">+</button>
                     </div>
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="flex space-x-4">
-                    <button onclick="addToCartWithQuantity({{ $product->id }}, '{{ $product->name }}', {{ $product->price }}, '{{ $product->main_image_url }}')" 
-                            class="flex-1 bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors">
-                        Add to Cart
+                <div class="flex space-x-4 mt-4">
+                    <button
+                        id="addToCartBtn"
+                        class="flex-1 bg-black text-white px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 disabled:opacity-60"
+                    >
+                        <span>Add to Cart</span>
+                        <span class="hidden loader animate-spin border-2 border-white border-t-transparent rounded-full w-4 h-4"></span>
                     </button>
-                    <button onclick="toggleWishlist({{ $product->id }}, '{{ $product->name }}')" 
-                            class="w-12 h-12 border border-gray-300 rounded-lg flex items-center justify-center hover:border-gray-400 transition-colors wishlist-btn">
-                        <i class="fas fa-heart text-gray-400"></i>
+
+                    <button
+                        id="wishlistBtn"
+                        class="w-12 h-12 border border-gray-300 rounded-lg flex items-center justify-center"
+                    >
+                        <i class="fas fa-heart"></i>
                     </button>
                 </div>
 
@@ -247,15 +266,22 @@
         @if($relatedProducts->count() > 0)
             <div class="mt-12">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">Related Products</h2>
-                <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
-                    @foreach($relatedProducts as $relatedProduct)
-                        <x-product-card :product="$relatedProduct" />
+                <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    @foreach($relatedProducts as $related)
+                        <x-product-card :product="$related" />
                     @endforeach
                 </div>
             </div>
         @endif
     </div>
+</div>
 @endsection
+
+@push('scripts')
+<script type="module" src="{{ mix('js/product.js') }}"></script>
+@endpush
+
+
 
 @push('styles')
 <style>
@@ -289,6 +315,28 @@
 #mainImage.loading {
     opacity: 0.6;
 }
+/* Main image zoom effect */
+#mainImageContainer {
+    overflow: hidden; 
+    border-radius: 0.5rem; 
+}
+
+#mainImage {
+    transition: transform 0.4s ease, opacity 0.3s ease;
+    cursor: zoom-in;
+}
+
+#mainImage:hover {
+    transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+    #mainImage:hover {
+        transform: none;
+        cursor: default;
+    }
+}
+
 
 /* Ensure thumbnails are clearly interactive */
 .thumbnail-image {

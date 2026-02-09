@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\WishlistController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/products', [ProductsController::class, 'index'])->name('products.index');
@@ -21,7 +22,28 @@ Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear')
 Route::get('/cart/data', [CartController::class, 'getCartData'])->name('cart.data');
 Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 
-Route::get('/wishlist', [App\Http\Controllers\WishlistController::class, 'index'])->name('wishlist.index');
+//wishlist routes
+Route::middleware('auth')->group(function () {
+Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+Route::post('/wishlist/remove', [WishlistController::class, 'remove'])->name('wishlist.remove');
+Route::post('/wishlist/clear', [WishlistController::class, 'clear'])->name('wishlist.clear');
+});
+
+Route::post('/wishlist/toggle', function (Request $request) {
+    $request->validate([
+        'product_id' => ['required', 'exists:products,id'],
+    ]);
+
+    $result = $request->user()
+        ->wishlist()
+        ->toggle($request->product_id);
+
+    return response()->json([
+        'added' => !empty($result['attached']),
+    ]);
+})->middleware('auth')->name('wishlist.toggle');
+
 
 // Static Pages
 Route::get('/contact', [PageController::class, 'contact'])->name('pages.contact');

@@ -3,7 +3,8 @@ use App\Models\Setting;
 @endphp
 
 <!-- Top Header Bar -->
-<!-- <div class="bg-gray-100 py-2 hidden md:block">
+
+<div class="bg-gray-100 py-2 hidden md:block">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center text-sm">
             <div class="text-gray-600">
@@ -11,10 +12,11 @@ use App\Models\Setting;
             </div>
             <div class="flex items-center space-x-4">
                 <a href="{{ route('wishlist.index') }}" class="text-gray-600 hover:text-gray-800">Wishlist</a>
+                <a href="{{ route('cart.index') }}" class="text-gray-600 hover:text-gray-800">Cart</a>
             </div>
         </div>
     </div>
-</div> -->
+</div>
 
 <!-- Main Header -->
 <header class="bg-gray-900 shadow-sm position: sticky top-0 z-30">
@@ -56,6 +58,38 @@ use App\Models\Setting;
             <button id="mobile-search-button" class="md:hidden flex items-center space-x-2 text-white hover:text-gray-300">
                 <i class="fas fa-search text-xl"></i>
             </button>
+            <!-- Cart Icon -->
+<div class="relative group">
+    <a href="{{ route('cart.index') }}" class="relative text-white hover:text-gray-300">
+        <i class="fas fa-shopping-cart text-xl"></i>
+
+        <span
+            class="cart-count absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full px-1.5 min-w-[18px] text-center hidden">
+            0
+        </span>
+    </a>
+
+    <!-- Mini Cart Dropdown -->
+    <div
+        class="cart-dropdown absolute right-0 mt-3 w-80 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+        <div class="p-4 text-gray-500 text-center">
+            Your basket is empty
+        </div>
+
+        <div class="border-t p-4">
+            <div class="flex justify-between text-sm font-semibold">
+                <span>Total</span>
+                <span class="cart-dropdown-total">KES 0.00</span>
+            </div>
+
+            <a href="{{ route('cart.index') }}"
+               class="block mt-3 text-center bg-gray-900 text-white py-2 rounded hover:bg-gray-800">
+                View Cart
+            </a>
+        </div>
+    </div>
+</div>
+
         </div>
     </div>
 </header>

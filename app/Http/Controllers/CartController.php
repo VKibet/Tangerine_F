@@ -216,7 +216,18 @@ class CartController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'There was an error processing your order. Please try again.');
-        }
+        
+
+                    //Testing real error
+            //     } catch (\Exception $e) {
+            // DB::rollBack();
+
+            // dd(
+            //     $e->getMessage(),
+            //     $e->getFile(),
+            //     $e->getLine()
+            // );
+}
     }
     
     private function sendOrderEmail($order, $cartItems)

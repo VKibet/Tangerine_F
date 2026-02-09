@@ -1,4 +1,5 @@
 import './bootstrap';
+import './product';
 
 import Alpine from 'alpinejs';
 
@@ -192,6 +193,12 @@ function initializeCart() {
                 
                 if (cartCountElement) {
                     cartCountElement.textContent = data.cart_count;
+
+                    if (data.cart_count > 0) {
+                        cartCountElement.classList.remove('hidden');
+                    } else {
+                        cartCountElement.classList.add('hidden');
+                    }
                 }
                 
                 if (cartTotalElement) {
@@ -274,81 +281,95 @@ function initializeCart() {
         }
     }
     
-    // Update cart page content
-    function updateCartPageContent(cart) {
-        // Only update if we're on the cart page
-        const cartItemsContainer = document.querySelector('.divide-y.divide-gray-200');
-        if (!cartItemsContainer) return;
-        
-        if (Object.keys(cart).length === 0) {
-            // Redirect to empty cart state
-            window.location.reload();
-            return;
-        }
-        
-        let cartItemsHtml = '';
-        let total = 0;
-        
-        Object.values(cart).forEach(item => {
-            const itemTotal = item.price * item.quantity;
-            total += itemTotal;
-            
-            cartItemsHtml += `
-                <div class="p-6 flex items-center space-x-4">
-                    <img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-cover rounded" 
-                         onerror="this.src='https://via.placeholder.com/80x80/cccccc/ffffff?text=No+Image'">
-                    
-                    <div class="flex-1">
-                        <h3 class="text-lg font-medium text-gray-900">${item.name}</h3>
-                        <p class="text-sm text-gray-500">${item.category || 'Product'}</p>
-                        <div class="flex items-center mt-2">
-                            <span class="text-lg font-bold text-gray-900">KES ${item.price.toLocaleString()}</span>
-                        </div>
+function updateCartPageContent(cart) {
+    const cartItemsContainer = document.querySelector('.divide-y.divide-gray-200');
+    if (!cartItemsContainer) return;
+
+    if (Object.keys(cart).length === 0) {
+        window.location.reload();
+        return;
+    }
+
+    let cartItemsHtml = '';
+    let total = 0;
+
+    Object.values(cart).forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+
+        cartItemsHtml += `
+            <div class="p-6 flex items-center space-x-4">
+                <img 
+                    src="${item.image || '/images/placeholder.png'}"
+                    alt="${item.name}"
+                    class="w-20 h-20 object-cover rounded"
+                    onerror="this.src='/images/placeholder.png'"
+                >
+
+                <div class="flex-1">
+                    <h3 class="text-lg font-medium text-gray-900">${item.name}</h3>
+                    <p class="text-sm text-gray-500">${item.category || 'Product'}</p>
+                    <span class="text-lg font-bold text-gray-900">
+                        KES ${item.price.toLocaleString()}
+                    </span>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center border border-gray-300 rounded-lg">
+                        <button 
+                            onclick="updateCartQuantity(${item.id}, ${item.quantity - 1})"
+                            class="px-3 py-2 text-gray-600 hover:text-gray-800"
+                            ${item.quantity <= 1 ? 'disabled' : ''}
+                        >
+                            <i class="fas fa-minus text-xs"></i>
+                        </button>
+
+                        <span class="px-3 py-2 font-medium">${item.quantity}</span>
+
+                        <button 
+                            onclick="updateCartQuantity(${item.id}, ${item.quantity + 1})"
+                            class="px-3 py-2 text-gray-600 hover:text-gray-800"
+                        >
+                            <i class="fas fa-plus text-xs"></i>
+                        </button>
                     </div>
-                    
-                    <div class="flex items-center space-x-4">
-                        <div class="flex items-center border border-gray-300 rounded-lg">
-                            <button onclick="updateCartQuantity(${item.id}, ${parseInt(item.quantity) - 1})" 
-                                    class="px-3 py-2 text-gray-600 hover:text-gray-800 transition-colors" 
-                                    ${parseInt(item.quantity) <= 1 ? 'disabled' : ''}>
-                                <i class="fas fa-minus text-xs"></i>
-                            </button>
-                            <span class="px-3 py-2 text-gray-900 font-medium">${item.quantity}</span>
-                            <button onclick="updateCartQuantity(${item.id}, ${parseInt(item.quantity) + 1})" 
-                                    class="px-3 py-2 text-gray-600 hover:text-gray-800 transition-colors">
-                                <i class="fas fa-plus text-xs"></i>
-                            </button>
+
+                    <div class="text-right">
+                        <div class="text-lg font-bold">
+                            KES ${itemTotal.toLocaleString()}
                         </div>
-                        
-                        <div class="text-right">
-                            <div class="text-lg font-bold text-gray-900">KES ${itemTotal.toLocaleString()}</div>
-                            <button onclick="removeFromCart(${item.id})" 
-                                    class="text-red-500 hover:text-red-700 text-sm transition-colors">
-                                Remove
-                            </button>
-                        </div>
+                        <button 
+                            onclick="removeFromCart(${item.id})"
+                            class="text-red-500 hover:text-red-700 text-sm"
+                        >
+                            Remove
+                        </button>
                     </div>
                 </div>
-            `;
-        });
-        
-        cartItemsContainer.innerHTML = cartItemsHtml;
-        
-        // Update total on cart page
-        const totalElement = document.querySelector('.text-gray-900:contains("Total")');
-        if (totalElement) {
-            totalElement.textContent = `KES ${total.toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-        }
-        
-        // Update order summary
-        const orderSummaryElements = document.querySelectorAll('.text-gray-900');
-        orderSummaryElements.forEach(element => {
-            if (element.textContent.includes('KES') && !element.textContent.includes('Total')) {
-                element.textContent = `KES ${total.toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-            }
-        });
+            </div>
+        `;
+    });
+
+    cartItemsContainer.innerHTML = cartItemsHtml;
+
+    // Update cart total (ONE place only)
+    const totalElement = document.getElementById('cart-page-total');
+    if (totalElement) {
+        totalElement.textContent = `KES ${total.toLocaleString('en-KE', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })}`;
     }
-    
+
+    // Update order summary total (optional)
+    const summaryTotal = document.getElementById('order-summary-total');
+    if (summaryTotal) {
+        summaryTotal.textContent = `KES ${total.toLocaleString('en-KE', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })}`;
+    }
+}
     // Add to cart function
     window.addToCart = function(productId, productName, productPrice, productImage, quantity = 1) {
         const formData = new FormData();
