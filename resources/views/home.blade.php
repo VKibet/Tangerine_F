@@ -75,19 +75,20 @@
 <section class="relative h-screen w-full overflow-hidden">
 
     <!-- Background Video -->
-      <video 
-        class="absolute top-0 left-0 w-full h-full object-cover"
+        <video
+        class="absolute inset-0 w-full h-full object-cover"
         autoplay
         loop
         muted
-        playsinline
         preload="auto"
+        playsinline
         poster="{{ asset('images/landing-fallback.jpg') }}"
-    >     
-    <source src="{{ asset('images/TFM.mp4') }}" type="video/mp4">
-    </video>
-
-    <!-- Your overlay + content on top as usual -->
+    >
+        <source src="{{ asset('video/TFM.mp4') }}" type="video/mp4" media="(min-width: 1280px)">
+        <source src="{{ asset('video/TFM.mp4') }}" type="video/mp4">
+        </video>
+    
+    <!-- overlay + content on top as usual -->
     <div class="absolute inset-0 hero-overlay"></div>
     <div class="absolute inset-0 flex items-center justify-center text-white">
         Kenya’s home for quality furniture
