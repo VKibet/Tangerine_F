@@ -232,7 +232,7 @@ class CartController extends Controller
     
     private function sendOrderEmail($order, $cartItems)
     {
-        $adminEmail = config('mail.admin_email', 'admin@example.com');
+        $adminEmail = config('mail.admin_email', 'victordakibet@gmail.com');
         
         // Send email to admin
         Mail::send('emails.new-order', [
