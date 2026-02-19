@@ -278,7 +278,7 @@
 @endsection
 
 @push('scripts')
-<script type="module" src="{{ mix('js/product.js') }}"></script>
+@vite(['resources/js/product.js'])
 @endpush
 
 
