@@ -27,8 +27,17 @@ class ProductController extends Controller
         }
 
         // Filter by status
-        if ($request->status !== null) {
+        if ($request->status !== null && $request->status !== '') {
             $query->where('is_active', $request->status);
+        }
+
+        // Filter by availability (Ready / On order)
+        if ($request->filled('availability')) {
+            if ($request->availability === 'ready') {
+                $query->where('is_ready', true);
+            } elseif ($request->availability === 'on_order') {
+                $query->where('is_ready', false);
+            }
         }
 
         $products = $query->latest()->paginate(15);
@@ -60,10 +69,12 @@ class ProductController extends Controller
             'reviews_count' => 'nullable|integer|min:0',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
+            'is_ready' => 'boolean',
             'specifications' => 'nullable|array',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
+        $validated['is_ready'] = $request->boolean('is_ready');
 
         // Handle main image upload
         if ($request->hasFile('image')) {
@@ -126,10 +137,12 @@ class ProductController extends Controller
             'reviews_count' => 'nullable|integer|min:0',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
+            'is_ready' => 'boolean',
             'specifications' => 'nullable|array',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
+        $validated['is_ready'] = $request->boolean('is_ready');
 
         // Handle main image upload
         if ($request->hasFile('image')) {

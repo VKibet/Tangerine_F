@@ -141,6 +141,18 @@
                             <span class="ml-2 text-sm text-gray-700">Active</span>
                         </label>
                     </div>
+
+                    <div>
+                        <label for="is_ready" class="block text-sm font-medium text-gray-700 mb-1">Availability</label>
+                        <select id="is_ready" name="is_ready" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="1" {{ (string) old('is_ready', $product->is_ready ? '1' : '0') === '1' ? 'selected' : '' }}>Ready (in stock / available now)</option>
+                            <option value="0" {{ (string) old('is_ready', $product->is_ready ? '1' : '0') === '0' ? 'selected' : '' }}>On order</option>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">Choose "Ready" for items available now, "On order" for items that can be ordered.</p>
+                        @error('is_ready')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
             </div>
 

@@ -10,7 +10,23 @@ class ProductsController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with('category')->active()->inStock();
+        $query = Product::with('category')->active();
+
+        // Availability filter: Ready (in stock) vs On order
+        if ($request->filled('availability')) {
+            if ($request->availability === 'ready') {
+                $query->ready()->inStock();
+            } elseif ($request->availability === 'on_order') {
+                $query->onOrder();
+            }
+        } else {
+            // Show both: ready (with stock) and on-order
+            $query->where(function ($q) {
+                $q->where(function ($q2) {
+                    $q2->where('is_ready', true)->where('stock_quantity', '>', 0);
+                })->orWhere('is_ready', false);
+            });
+        }
         
         // Category filter
         if ($request->filled('category')) {

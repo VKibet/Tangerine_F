@@ -22,6 +22,14 @@
                 </span>
             </div>
         @endif
+        <!-- On order badge -->
+        @if(!$product->is_ready)
+            <div class="absolute top-2 {{ $product->badge ? 'left-16' : 'left-2' }}">
+                <span class="bg-amber-500 text-white text-xs font-bold px-2 py-1 rounded">
+                    On order
+                </span>
+            </div>
+        @endif
         
         <!-- Action Buttons Container - Hidden by default, animated on hover -->
         <div class="absolute top-2 right-2 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out">
@@ -88,7 +96,7 @@
     
     <!-- Hidden structured data -->
     <meta itemprop="url" content="{{ route('products.show', $product->slug) }}">
-    <meta itemprop="availability" content="{{ $product->stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}">
+    <meta itemprop="availability" content="{{ ($product->is_ready && $product->stock_quantity > 0) ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder' }}">
     @if($product->category)
         <meta itemprop="category" content="{{ $product->category->name }}">
     @endif

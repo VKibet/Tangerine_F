@@ -28,6 +28,7 @@ class Product extends Model
         'stock_quantity',
         'is_featured',
         'is_active',
+        'is_ready',
         'specifications'
     ];
 
@@ -39,6 +40,7 @@ class Product extends Model
         'stock_quantity' => 'integer',
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
+        'is_ready' => 'boolean',
         'specifications' => 'array',
         'images' => 'array'
     ];
@@ -66,6 +68,16 @@ class Product extends Model
     public function scopeInStock($query)
     {
         return $query->where('stock_quantity', '>', 0);
+    }
+
+    public function scopeReady($query)
+    {
+        return $query->where('is_ready', true);
+    }
+
+    public function scopeOnOrder($query)
+    {
+        return $query->where('is_ready', false);
     }
 
     public function getFormattedPriceAttribute()

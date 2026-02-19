@@ -56,6 +56,21 @@
             <div class="text-center">
                 <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Our Furniture Collection</h1>
                 <p class="text-lg text-gray-600 mb-6">Discover our amazing collection of quality furniture</p>
+                <!-- Availability tabs: Ready / On order -->
+                <div class="flex flex-wrap justify-center gap-2 mb-4">
+                    <a href="{{ route('products.index', request()->except('availability', 'page')) }}" 
+                       class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors {{ !request('availability') ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200' }}">
+                        All
+                    </a>
+                    <a href="{{ route('products.index', ['availability' => 'ready'] + request()->except('availability', 'page')) }}" 
+                       class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors {{ request('availability') === 'ready' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200' }}">
+                        Ready
+                    </a>
+                    <a href="{{ route('products.index', ['availability' => 'on_order'] + request()->except('availability', 'page')) }}" 
+                       class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors {{ request('availability') === 'on_order' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200' }}">
+                        On order
+                    </a>
+                </div>
                 <div class="flex justify-center">
                     <p class="text-sm text-gray-500 bg-white px-4 py-2 rounded-lg shadow-sm">Showing {{ $products->firstItem() ?? 0 }} - {{ $products->lastItem() ?? 0 }} of {{ $totalProducts }} products</p>
                 </div>
@@ -73,8 +88,8 @@
                         <div class="flex items-center space-x-2">
                             <i class="fas fa-filter text-gray-600"></i>
                             <span class="font-medium text-gray-900">Filters</span>
-                            @if(request()->hasAny(['search', 'category', 'min_price', 'max_price', 'rating', 'sort']))
-                                <span class="bg-blue-500 text-white text-xs rounded-full px-2 py-1">{{ count(array_filter(request()->only(['search', 'category', 'min_price', 'max_price', 'rating', 'sort']))) }}</span>
+                            @if(request()->hasAny(['search', 'category', 'min_price', 'max_price', 'rating', 'sort', 'availability']))
+                                <span class="bg-blue-500 text-white text-xs rounded-full px-2 py-1">{{ count(array_filter(request()->only(['search', 'category', 'min_price', 'max_price', 'rating', 'sort', 'availability']))) }}</span>
                             @endif
                         </div>
                         <i class="fas fa-chevron-down text-gray-500 transition-transform duration-200" id="filter-toggle-icon"></i>
@@ -85,10 +100,32 @@
                 <div id="mobile-filters" class="lg:block hidden bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                     <h3 class="text-lg font-semibold mb-6">Filters</h3>
                     
+                    <!-- Availability -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Availability</label>
+                        <div class="space-y-2">
+                            <a href="{{ route('products.index', request()->except('availability', 'page')) }}" 
+                               class="block text-sm {{ !request('availability') ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-gray-900' }}">
+                                All
+                            </a>
+                            <a href="{{ route('products.index', ['availability' => 'ready'] + request()->except('availability', 'page')) }}" 
+                               class="block text-sm {{ request('availability') === 'ready' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-gray-900' }}">
+                                Ready
+                            </a>
+                            <a href="{{ route('products.index', ['availability' => 'on_order'] + request()->except('availability', 'page')) }}" 
+                               class="block text-sm {{ request('availability') === 'on_order' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-gray-900' }}">
+                                On order
+                            </a>
+                        </div>
+                    </div>
+
                     <!-- Search -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
-                        <form method="GET" action="{{ route('products.index') }}">
+                        <form method="GET" action="{{ route('products.index') }}" id="search-form">
+                            @if(request('availability'))
+                                <input type="hidden" name="availability" value="{{ request('availability') }}">
+                            @endif
                             <input type="text" 
                                    name="search" 
                                    value="{{ request('search') }}"
@@ -118,6 +155,9 @@
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Price Range</label>
                         <form method="GET" action="{{ route('products.index') }}" id="price-form">
+                            @if(request('availability'))
+                                <input type="hidden" name="availability" value="{{ request('availability') }}">
+                            @endif
                             @if(request('min_price') || request('max_price'))
                                 <input type="hidden" name="min_price" value="{{ request('min_price') }}">
                                 <input type="hidden" name="max_price" value="{{ request('max_price') }}">
@@ -158,7 +198,7 @@
                     </div>
 
                     <!-- Clear Filters -->
-                    @if(request()->hasAny(['search', 'category', 'min_price', 'max_price', 'rating', 'sort']))
+                    @if(request()->hasAny(['search', 'category', 'min_price', 'max_price', 'rating', 'sort', 'availability']))
                         <div class="pt-4 border-t border-gray-200">
                             <a href="{{ route('products.index') }}" 
                                class="text-sm text-red-600 hover:text-red-700 font-medium">
