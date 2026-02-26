@@ -161,7 +161,7 @@ use App\Models\Setting;
                 </div>
                 
                 <!-- Categories -->
-                <div>
+                <!-- <div>
                     <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Categories</h3>
                     <div class="space-y-2">
                         @foreach(\App\Models\Category::active()->take(6)->get() as $category)
@@ -171,7 +171,7 @@ use App\Models\Setting;
                             </a>
                         @endforeach
                     </div>
-                </div>
+                </div> -->
                 
                 <!-- Account & Cart -->
                 <div>
